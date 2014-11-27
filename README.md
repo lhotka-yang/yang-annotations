@@ -1,22 +1,7 @@
-YANG-I-D
-========
+Common Metadata Annotations for Data Modelled with YANG
+=======================================================
 
-[Fork](https://github.com/llhotka/YANG-I-D/wiki/Fork) this project to
-create an environment for integrated development of YANG modules and
-Internet-Drafts.
-
-Edit the forked project's README according to the following template:
-
----
-
-_PROJECT NAME_
-==============
-
-_Description of the project._
-
-_Put project-specific instructions here._
+This Internet-Draft and YANG module define an annotation that can be
+used for deactivating parts of the data tree
 
 Generic YANG-I-D [instructions](https://github.com/llhotka/YANG-I-D/wiki/Instructions).
-
-
-

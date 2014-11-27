@@ -1,8 +1,8 @@
-I_D = # Name of the Internet-Draft (without revision)
-REVNO = # I-D revision number
+I_D = draft-lhotka-netmod-yang-annotations
+REVNO = 00
 DATE ?= $(shell date +%F)
-MODULES =
-FIGURES = model.tree
+MODULES = ietf-yang-annotations
+FIGURES =
 EXAMPLE_BASE = example
 EXAMPLE_TYPE = get-reply
 baty = $(EXAMPLE_BASE)-$(EXAMPLE_TYPE)
@@ -21,7 +21,7 @@ y2dopts = -t $(EXAMPLE_TYPE) -b $(EXAMPLE_BASE)
 
 .PHONY: all validate clean rnc refs
 
-all: $(idrev).txt $(schemas) model.tree
+all: $(idrev).txt $(schemas)
 
 $(idrev).xml: $(I_D).xml $(artworks) figures.ent yang.ent
 	@xsltproc $(xslpars) $(xsldir)/upd-i-d.xsl $< | xmllint --noent -o $@ -

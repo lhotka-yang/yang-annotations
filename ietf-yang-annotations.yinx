@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module name="ietf-yang-annotations"
+        xmlns="urn:ietf:params:xml:ns:yang:yin:1"
+	xmlns:yan="urn:ietf:params:xml:ns:yang:ietf-yang-annotations"
+	xmlns:md="urn:ietf:params:xml:ns:yang:ietf-yang-metadata"
+        xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:xi="http://www.w3.org/2001/XInclude">	
+  <namespace uri="urn:ietf:params:xml:ns:yang:ietf-yang-annotations"/>
+  <prefix value="yan"/>
+  <import module="ietf-yang-metadata">
+    <prefix value="md"/>
+  </import>
+  <xi:include href=".tools/bplate/netmod-module.yinx"
+              xpointer="xpointer(id('org'))"/>
+  <contact>
+    <text>
+      <xi:include href=".tools/bplate/netmod-module.yinx"
+                  xpointer="xpointer(id('contact')/*)"/>
+      <h:p>
+        Editor:   Ladislav Lhotka<h:br/>
+                  &lt;mailto:lhotka@nic.cz&gt;
+      </h:p>
+    </text>
+  </contact>
+  <description>
+    <text>
+      <h:p>This module defines generally useful metadata annotations
+      for data modelled with YANG.</h:p>
+      <xi:include href=".tools/bplate/netmod-module.yinx"
+                  xpointer="xpointer(id('desc')/*)"/>
+    </text>
+  </description>
+  <revision date="2014-11-27">
+    <description>
+      <text>Initial revision.</text>
+    </description>
+    <reference>
+      <text>
+	RFC XXXX: Common Metadata Annotations for Data Modelled with YANG.
+      </text>
+    </reference>
+  </revision>
+
+  <md:annotation name="inactive">
+    <type name="boolean"/>
+    <description>
+      <text>
+	<h:p>If this annotation is attached to a configuration data
+	node, and its value is 'true', then a server that implements
+	this annotation behaves as if the subtree rooted at this data
+	node was not present.</h:p>
+      </text>
+    </description>
+  </md:annotation>
+
+</module>
