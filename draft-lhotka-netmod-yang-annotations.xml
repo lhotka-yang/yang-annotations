@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE rfc SYSTEM ".tools/schema/rfc2629.dtd" [
+<!ENTITY % COMMON SYSTEM ".tools/bplate/common.ent">
+%COMMON;
+<!-- Replace with actual working group -->
+<!ENTITY % WG SYSTEM ".tools/bplate/netmod.ent">
+%WG;
+<!ENTITY % stdrefs SYSTEM "stdrefs.ent">
+%stdrefs;
+<!ENTITY % yang SYSTEM "yang.ent">
+%yang;
+]>
+
+<?rfc strict="yes"?>
+<?rfc toc="yes"?>
+<?rfc tocdepth="3"?>
+<?rfc symrefs="yes"?>
+<?rfc sortrefs="yes"?>
+<?rfc compact="yes"?>
+<?rfc subcompact="no"?>
+
+<rfc category="std">
+  <front>
+    <title abbrev="Common Annotations for YANG">Common Metadata
+    Annotations for Data Modelled with YANG</title>
+    <author fullname="Ladislav Lhotka" initials="L." surname="Lhotka">
+      <organization>CZ.NIC</organization>
+      <address>
+        <email>lhotka@nic.cz</email>
+      </address>
+    </author>
+    <date year="2014-11-28"/>
+    <area/>
+    &wg;
+
+    <abstract>
+      <t>This document introduces a collection of common metadata
+      annotations intended for use in data modeled with the YANG
+      language.</t>
+    </abstract>
+  </front>
+
+  <middle>
+    <section anchor="sec.introduction" title="Introduction">
+      <t>This document introduces a collection of metadata annotations
+      that are intended for general use in data modeled with the YANG
+      data modeling language <xref target="RFC6020"/>. YANG module
+      "ietf-yang-annotations" (<xref target="sec.module"/>) defines
+      these annotations using the extension statement "annotation"
+      that is defined in the "ietf-yang-metadata" module <xref
+      target="I-D.lhotka-netmod-yang-metadata"/>.
+      </t>
+    </section>
+
+    <section anchor="sec.terminology" title="Terminology">
+      
+      &kw-2119;
+      
+      <t>The following terms are defined in <xref target="RFC6241"/>:
+      <list style="symbols">
+	<t>client,</t>
+	<t>configuration data,</t>
+	<t>configuration datastore,</t>
+	<t>notification,</t>
+	<t>operation,</t>
+	<t>RPC method,</t>
+	<t>server,</t>
+	<t>state data.</t>
+      </list>
+      </t>
+    </section>
+
+    <section anchor="sec.annots" title="Common Metadata Annotations">
+      <t>YANG module "ietf-yang-annotations" (<xref
+      target="sec.module"/>) contains normative definitions of the
+      following metadata annotations:
+      <list style="symbols">
+	<t>inactive - deactivates a subtree in a configuration
+	datastore,</t>
+	<t>type - indicates the actual type for a leaf instance with
+	the "union" type".</t>
+      </list></t>
+      <t>The following subsections provide an informal explanation and
+      examples showing typical use of these annotations. The examples
+      are based on YANG modules "ietf-interfaces" <xref
+      target="RFC7223"/> and "ietf-system" <xref
+      target="RFC7317"/>.</t>
+      <section anchor="sec.inactive" title='The "inactive" Annotation'>
+	<t>A client uses the "inactive" annotation for deactivating a
+	subtree in a configuration datastore while keeping the subtree
+	in place.</t>
+	<t>For example, a NETCONF client can use the following
+	&lt;edit-config&gt; operation to deactivate the configuration
+	of an interface in the "running" datastore:</t>
+	<figure>
+	  <artwork>
+<![CDATA[<nc:rpc message-id="101"
+     xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0">
+  <nc:edit-config>
+    <nc:target>
+      <nc:running/>
+    </nc:target>
+    <nc:config>
+      <interfaces
+        xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces"
+        xmlns:yan="urn:ietf:params:xml:ns:yang:ietf-yang-annotations">
+        <interface yann:inactive="true">
+          <name>eth0</name>
+        </interface>
+      </interfaces>
+    </nc:config>
+  </nc:edit-config>
+</nc:rpc>]]>
+	  </artwork>
+	</figure>
+	<t>A RESTCONF client can achieve the same effect with the
+	following HTTP request:</t>
+	<figure>
+	  <artwork>
+<![CDATA[PATCH /restconf/data/ietf-interfaces:interfaces/
+   interface/name=eth0 HTTP/1.1
+Host: example.com
+Content-Type: application/yang.data+json
+
+{
+  "@": {
+    "ietf-yang-annotations:inactive": true
+  }
+}]]>	    
+	  </artwork>
+	</figure>
+      </section>
+
+      <section anchor="sec.type" title='The "type" Annotation'>
+	<t>Clients and servers use the "type" annotation to specify
+	the actual type for an instance of a leaf that has the "union"
+	type (or a type derived from "union"). The value of this
+	annotation has to be one of the member types appearing in the
+	specification of the "union" type.</t>
+	<t>For example, a NETCONF client can use the following
+	&lt;edit-config&gt; operation to set an IPv6 address of a name
+	server in DNS resolver configuration:</t>
+	<figure>
+	  <artwork>
+<![CDATA[<nc:rpc message-id="101"
+     xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0">
+  <nc:edit-config>
+    <nc:target>
+      <nc:running/>
+    </nc:target>
+    <nc:config>
+      <system
+        xmlns="urn:ietf:params:xml:ns:yang:ietf-system"
+        xmlns:yan="urn:ietf:params:xml:ns:yang:ietf-yang-annotations">
+        <dns-resolver>
+	  <server>
+            <name>primary</name>
+	    <udp-and-tcp>
+	      <address yann:type="ietf-inet-types:ipv6-address">
+	        2001:db8:0:2::1
+	      </address>
+	    </udp-and-tcp>
+	  </server>
+	</dns-resolver>
+      </system>
+    </nc:config>
+  </nc:edit-config>
+</nc:rpc>]]>
+	  </artwork>
+	</figure>
+	<t>A RESTCONF client can perform the same configuration with
+	the following HTTP request:</t>
+	<figure>
+	  <artwork>
+<![CDATA[PUT /restconf/data/ietf-system:system/
+   dns-resolver/server/name=eth0/udp-and-tcp/address HTTP/1.1
+Host: example.com
+Content-Type: application/yang.data+json
+
+{
+  "@address": {
+    "ietf-yang-annotations:type": "ietf-inet-types:ipv6-address"
+  },
+  "address": "2001:db8:0:2::1"
+}]]>	    
+	  </artwork>
+	</figure>
+      </section>
+    </section>
+    
+    <section anchor="sec.module" title="YANG Annotations Module">
+
+      &ed-hint-fill-in;
+      
+      <figure>
+	&ietf-yang-annotations.yang;
+      </figure>
+
+    </section>
+
+    <section anchor="iana" title="IANA Considerations">
+      <t>RFC Ed.: In this section, replace all occurrences of 'XXXX'
+      with the actual RFC number (and remove this note).</t>
+
+      <t>This document registers the following namespace URI in the
+      IETF XML registry <xref target="RFC3688"/>:</t>
+      <figure>
+	<artwork>
+----------------------------------------------------------
+URI: urn:ietf:params:xml:ns:yang:ietf-yang-annotations
+
+Registrant Contact: The IESG.
+
+XML: N/A, the requested URI is an XML namespace.
+----------------------------------------------------------
+	</artwork>
+      </figure>
+
+      <t>This document registers the following YANG modules in the
+      YANG Module Names registry <xref target="RFC6020"/>:</t>
+      <figure>
+	<artwork>
+-------------------------------------------------------------------
+name:         ietf-yang-annotations
+namespace:    urn:ietf:params:xml:ns:yang:ietf-yang-annotations
+prefix:       yann
+reference:    RFC XXXX
+-------------------------------------------------------------------
+	</artwork>
+      </figure>
+    </section>
+
+    <section anchor="security" title="Security Considerations">
+      <t>TBD</t>
+    </section>
+
+  </middle>
+
+  <back>
+    <references title="Normative References">
+      &RFC2119;
+      &RFC3688;
+      &RFC6020;
+      &RFC6241;
+      &I-D.lhotka-netmod-yang-metadata;
+    </references>
+
+    <references title="Informative References">
+      &RFC7223;
+      &RFC7317;
+    </references>
+
+  </back>
+</rfc>
