@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <module name="ietf-yang-annotations"
         xmlns="urn:ietf:params:xml:ns:yang:yin:1"
-	xmlns:yan="urn:ietf:params:xml:ns:yang:ietf-yang-annotations"
+	xmlns:yann="urn:ietf:params:xml:ns:yang:ietf-yang-annotations"
 	xmlns:md="urn:ietf:params:xml:ns:yang:ietf-yang-metadata"
         xmlns:h="http://www.w3.org/1999/xhtml"
         xmlns:xi="http://www.w3.org/2001/XInclude">	
   <namespace uri="urn:ietf:params:xml:ns:yang:ietf-yang-annotations"/>
-  <prefix value="yan"/>
+  <prefix value="yann"/>
   <import module="ietf-yang-metadata">
     <prefix value="md"/>
   </import>
@@ -45,12 +45,61 @@
     <type name="boolean"/>
     <description>
       <text>
-	<h:p>If this annotation is attached to a configuration data
-	node, and its value is 'true', then a server that implements
-	this annotation behaves as if the subtree rooted at this data
-	node was not present.</h:p>
+	<h:p>A client uses this annotation for deactivating a subtree
+	in a configuration datastore.</h:p>
+	<h:p>If a server advertises support for this annotation, then
+	a client MAY attach it to any data node instance in any
+	configuration datastore via standard editing methods. If its
+	value is 'true', then the server MUST behave as if the subtree
+	rooted at this data node was not present. If its value is
+	'false' the server MUST behave as if the annotation is not
+	present.</h:p>
       </text>
     </description>
   </md:annotation>
 
+  <md:annotation name="type">
+    <description>
+      <text>
+	<h:p>This annotation is used for indicating the actual type
+	for a value of a leaf with the 'union' type, or a type derived
+	from 'union' (henceforth denoted as 'a union type').</h:p>
+	<h:p>The value of this annotation can be</h:p>
+	<h:ul>
+	  <h:li>the name of a YANG built-in type,</h:li>
+	  <h:li>the name of a derived type prepended with the name of
+	  the YANG module where the type is defined and the colon
+	  character (':').</h:li>
+	</h:ul>
+	<h:p>If a server advertises support for this annotation,
+	then:</h:p>
+	<h:ul>
+	  <h:li>A client MAY attach this annotation to a leaf of a
+	  union type when creating or modifying the value of this leaf
+	  in a configuration datastore, or when such a leaf is
+	  contained in RPC request parameters. The server MUST take
+	  this information into account when interpreting the type of
+	  the received value.</h:li>
+	  <h:li>If a client doesn't do so, the server SHOULD attach
+	  this annotation to a leaf of a union type upon its creation
+	  or modification in a configuration datastore.</h:li>
+	  <h:li>The server SHOULD attach this annotation to all leafs
+	  of a union type that are sent to a client as state data, in
+	  an RPC reply, or in a notification.</h:li>
+	</h:ul>
+	<h:p>In all cases mentioned above, the receiving party SHALL
+	ignore this annotation if it is attached to an instance of a
+	data node that is not a leaf of a union type.</h:p>
+	<h:p>A server supporting this annotation SHALL report an error
+	if</h:p>
+	<h:ul>
+	  <h:li>the type specified in the annotation is not among
+	  member types of the annotated leaf's type,</h:li>
+	  <h:li>the value of the annotated leaf is not valid for the
+	  type specified by the annotation.</h:li>
+	</h:ul>
+      </text>
+    </description>
+  </md:annotation>
+  
 </module>
