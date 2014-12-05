@@ -4,7 +4,7 @@
 	xmlns:yann="urn:ietf:params:xml:ns:yang:ietf-yang-annotations"
 	xmlns:md="urn:ietf:params:xml:ns:yang:ietf-yang-metadata"
         xmlns:h="http://www.w3.org/1999/xhtml"
-        xmlns:xi="http://www.w3.org/2001/XInclude">	
+        xmlns:xi="http://www.w3.org/2001/XInclude">
   <namespace uri="urn:ietf:params:xml:ns:yang:ietf-yang-annotations"/>
   <prefix value="yann"/>
   <import module="ietf-yang-metadata">
@@ -101,5 +101,4 @@
       </text>
     </description>
   </md:annotation>
-  
 </module>
